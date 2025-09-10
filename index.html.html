@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple POS System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .products, .cart {
+      flex: 1;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .product {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .product button {
+      padding: 5px 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .product button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    #total {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+    }
+    .checkout {
+      margin-top: 15px;
+      text-align: right;
+    }
+    .checkout button {
+      padding: 10px 20px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .checkout button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Simple POS System</h1>
+  </header>
+  <div class="container">
+    <!-- Product List -->
+    <div class="products">
+      <h2>Products</h2>
+      <div class="product">
+        <span>Burger</span>
+        <span>$5</span>
+        <button onclick="addToCart('Burger', 5)">Add</button>
+      </div>
+      <div class="product">
+        <span>Pizza</span>
+        <span>$8</span>
+        <button onclick="addToCart('Pizza', 8)">Add</button>
+      </div>
+      <div class="product">
+        <span>Fries</span>
+        <span>$3</span>
+        <button onclick="addToCart('Fries', 3)">Add</button>
+      </div>
+      <div class="product">
+        <span>Drink</span>
+        <span>$2</span>
+        <button onclick="addToCart('Drink', 2)">Add</button>
+      </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="cart">
+      <h2>Cart</h2>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="total">Total: $0</div>
+      <div class="checkout">
+        <button onclick="checkout()">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(item, price) {
+      let product = cart.find(p => p.name === item);
+      if (product) {
+        product.qty++;
+        product.total = product.qty * product.price;
+      } else {
+        cart.push({ name: item, price: price, qty: 1, total: price });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      let tbody = document.querySelector("#cartTable tbody");
+      tbody.innerHTML = "";
+      let grandTotal = 0;
+      cart.forEach(product => {
+        grandTotal += product.total;
+        tbody.innerHTML += `
+          <tr>
+            <td>${product.name}</td>
+            <td>$${product.price}</td>
+            <td>${product.qty}</td>
+            <td>$${product.total}</td>
+          </tr>
+        `;
+      });
+      document.getElementById("total").innerText = "Total: $" + grandTotal;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+      alert("Checkout successful! Total: $" + cart.reduce((sum, p) => sum + p.total, 0));
+      cart = [];
+      renderCart();
+    }
+  </script>
+</body>
+</html>
